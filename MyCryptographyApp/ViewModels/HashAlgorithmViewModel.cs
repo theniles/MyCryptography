@@ -11,11 +11,17 @@ namespace MyCryptographyApp.ViewModels
     {
 
         private string m_Name;
-        public string Name { get { return m_Name; } set { SetProperty(ref m_Name, value); } }
+        public string DisplayName { get { return m_Name; } set { SetProperty(ref m_Name, value); } }
 
+        public Func<HashAlgorithm> HashFactory { get; }
 
-        private HashAlgorithm m_MyBindableProperty;
-        public HashAlgorithm HashAlgorithm { get { return m_MyBindableProperty; } set { SetProperty(ref m_MyBindableProperty, value); } }
+        public HashAlgorithmViewModel(string displayName, Func<HashAlgorithm> hashFactory)
+        {
+            DisplayName = displayName;
+            HashFactory = hashFactory;
+        }
+
+        public HashAlgorithm NewAlgorithm => HashFactory();
 
     }
 }

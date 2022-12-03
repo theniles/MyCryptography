@@ -49,11 +49,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MyCryptographyApi\MyCryptographyApi.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="Controls\" />
+	  <Folder Include="Converters\" />
+	  <Folder Include="Behaviors\" />
 	</ItemGroup>
 
 	<ItemGroup>

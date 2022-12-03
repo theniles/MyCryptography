@@ -11,4 +11,9 @@
         ContentTemplate="{DataTemplate views:NewOperationPage}"
         Route="NewOperationPage" />
 
+    <ShellContent
+        Title="View Operations"
+        ContentTemplate="{DataTemplate views:ViewOperationsPage}"
+        Route="ViewOperationsPage" />
+
 </Shell>

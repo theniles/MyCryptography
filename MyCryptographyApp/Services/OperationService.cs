@@ -1,4 +1,5 @@
 ﻿using MyCryptographyApp.Models;
+using MyCryptographyApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace MyCryptographyApp.Services
 {
     internal class OperationService
     {
-        public List<OOperationModel> Operations { get; } = new List<OOperationModel>();
+        public List<OperationViewModel> Operations { get; } = new List<OperationViewModel>();
 
-        public void AddOperation()
+        public void AddOperation(OperationViewModel operation)
         {
-            
+            Operations.Add(operation);
         }
     }
 }
