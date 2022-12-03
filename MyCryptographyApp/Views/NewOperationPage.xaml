@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:MyCryptographyApp.ViewModels"
+             xmlns:converters="clr-namespace:MyCryptographyApp.Converters"
+             x:Class="MyCryptographyApp.Views.NewOperationPage"
+             Title="NewOperationPage">
+    <ContentPage.BindingContext>
+        <viewModels:NewOperationViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <DataTemplate x:Key="pathArgumentTemplate">
+            <Grid Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Name}"/>
+                <Entry Grid.Row="1" Grid.Column="0" HeightRequest="40" Text="{Binding Path}"/>
+                <Button Grid.Row="1" Grid.Column="1" HeightRequest="40" Padding="10,0,0,0" Text="Browse Path"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="keyArgumentTemplate">
+            <VerticalStackLayout Padding="10">
+                <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand"/>
+                <Label Text="Key Characters, UTF-16 encoding used"/>
+                <Entry HeightRequest="40" Text="{Binding TextKey}"/>
+                <Label Text="Hash algorithm"/>
+                <Picker ItemsSource="{Binding AvailableHashAlgorithms}" SelectedItem="{Binding HashAlgorithm, Mode=OneWayToSource}" ItemDisplayBinding="{Binding Name}"/>
+            </VerticalStackLayout>
+        </DataTemplate>
+        <converters:OperationArgumentDataTemplateSelector x:Key="operationArgumentTemplateSelector"
+                                                          KeyArgumentTemplate="{StaticResource keyArgumentTemplate}"
+                                                          PathArgumentTemplate="{StaticResource pathArgumentTemplate}"/>
+    </ContentPage.Resources>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="auto" />
+
+        </Grid.RowDefinitions>
+        <!--Select the available operations-->
+        <CollectionView Grid.Row="0" HorizontalOptions="Fill" ItemsSource="{Binding OperationTypes}" SelectionMode="Single" SelectedItem="{Binding SelectedOperationType}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+
+                        <Label Text="{Binding Name}"
+                               FontAttributes="Bold"
+                               FontSize="18"/>
+
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <!--Edit arguments based on the selected operation-->
+        <ScrollView Grid.Row="1">
+            <CollectionView ItemsSource="{Binding SelectedOperationType.Arguments}" ItemTemplate="{StaticResource operationArgumentTemplateSelector}"/>
+
+        </ScrollView>
+
+        <Button Grid.Row="2" Text="Execute Operation"/>
+    </Grid>
+</ContentPage>
