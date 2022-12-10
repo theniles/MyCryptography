@@ -12,14 +12,13 @@ namespace MyCryptographyApp.ViewModels
         {
             OperationService = App.Current.Handler.MauiContext.Services.GetRequiredService<OperationService>();
             ProgressReportable = this;
-            Status = OperationStatus.Ready;
             Name = displayName;
             StartTime = DateTime.Now;
             EndTime = DateTime.UnixEpoch;
 
             CancelCommand = new Command(() =>
             {
-                if(Status == OperationStatus.Running)
+                if (Status == OperationStatus.Running)
                     CancellationTokenSource.Cancel();
             }, () => Status == OperationStatus.Running);
 
@@ -30,15 +29,17 @@ namespace MyCryptographyApp.ViewModels
 
             RunCommand = new Command(async () =>
             {
-                if(Status != OperationStatus.Running)
+                if (Status != OperationStatus.Running)
                     await Run();
-            }, ()=> Status != OperationStatus.Running);
+            }, () => Status != OperationStatus.Running);
 
             ReverseCommand = new Command(() =>
             {
-                if(Status != OperationStatus.Running)
+                if (Status != OperationStatus.Running)
                     OperationService.AddOperation(CreateReverseOperation());
             }, () => Status != OperationStatus.Running);
+
+            Status = OperationStatus.Ready;
         }
 
         protected abstract OperationViewModel CreateReverseOperation();
@@ -90,7 +91,19 @@ namespace MyCryptographyApp.ViewModels
         public ICommand ReverseCommand { get; }
 
         private OperationStatus m_Status;
-        public OperationStatus Status { get { return m_Status; } set { SetProperty(ref m_Status, value); } }
+        public OperationStatus Status
+        {
+            get { return m_Status; }
+            set
+            {
+                ((Command)CancelCommand).ChangeCanExecute();
+                ((Command)DismissCommand).ChangeCanExecute();
+                ((Command)RunCommand).ChangeCanExecute();
+                ((Command)ReverseCommand).ChangeCanExecute();
+
+                SetProperty(ref m_Status, value);
+            }
+        }
 
         private DateTime m_StartTime;
         public DateTime StartTime { get { return m_StartTime; } set { SetProperty(ref m_StartTime, value); } }

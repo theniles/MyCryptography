@@ -1,4 +1,5 @@
-﻿using MyCryptographyApp.Models;
+﻿using MyCryptographyApp.Helper;
+using MyCryptographyApp.Models;
 using MyCryptographyApp.Services;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,19 @@ namespace MyCryptographyApp.ViewModels
         public string KeyString { get { return m_KeyString; } set { SetProperty(ref m_KeyString, value); } }
 
         private SymmetricCryptographyOperationType m_CryptographyOperationType;
-        public SymmetricCryptographyOperationType CryptographyOperationType { get { return m_CryptographyOperationType; } set { SetProperty(ref m_CryptographyOperationType, value); } }
+        public SymmetricCryptographyOperationType CryptographyOperationType { get { return m_CryptographyOperationType; } set { 
+                if(CryptographyOperationType != value)
+                {
+                    var prefix = StringHelper.GetSymmetricCryptographyOperationTypePrefix(CryptographyOperationType);
+                    if (OutputFile != null && OutputFile.StartsWith(prefix))
+                    {
+                        OutputFile = 
+                            StringHelper.GetSymmetricCryptographyOperationTypePrefix(
+                            CryptographyOperationTypeHelper.ReverseType(CryptographyOperationType)) +
+                            OutputFile.Substring(prefix.Length, OutputFile.Length - prefix.Length);
+                    }
+                }
+                SetProperty(ref m_CryptographyOperationType, value); } }
 
         private string m_InputPath;
         public string InputFullPath { get { return m_InputPath; } set { SetProperty(ref m_InputPath, value); } }
@@ -51,8 +64,8 @@ namespace MyCryptographyApp.ViewModels
 
                 var operationName = CryptographyOperationType switch
                 {
-                    SymmetricCryptographyOperationType.Encryption => $"Encrypting {InputFullPath} to {outputPath}",
-                    SymmetricCryptographyOperationType.Decryption => $"Decrypting {InputFullPath} to {outputPath}",
+                    SymmetricCryptographyOperationType.Encryption => $"ENCRYPTION {Path.GetFileName(InputFullPath)} to {OutputFile}",
+                    SymmetricCryptographyOperationType.Decryption => $"DECRYPTION {InputFullPath} to {outputPath}",
                     _ => throw new NotImplementedException()
                 };
                 var op = new SymmetricCryptographyOperationViewModel(operationName, Aes.Create, SHA256.Create, CryptographyOperationType, InputFullPath, outputPath, Encoding.Unicode.GetBytes(KeyString));
@@ -68,7 +81,7 @@ namespace MyCryptographyApp.ViewModels
                     {
                         InputFullPath = file.FullPath;
                         OutputFolder = Path.GetDirectoryName(file.FullPath) ?? "";
-                        OutputFile = file.FileName;
+                        OutputFile = $"{StringHelper.GetSymmetricCryptographyOperationTypePrefix(CryptographyOperationType)} {file.FileName}";
                     }
                 }
                 catch (TaskCanceledException)

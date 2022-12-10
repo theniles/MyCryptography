@@ -19,6 +19,7 @@ namespace MyCryptographyApp.ViewModels
             InputPath = inputPath;
             OutputPath = outputPath;
             UnhashedKey = unhashedBytes;
+            ProgressMessage = "Operation Added";
         }
 
         protected async override Task Execute()
@@ -65,6 +66,10 @@ namespace MyCryptographyApp.ViewModels
                             var readBuffer = new byte[transform.InputBlockSize];
                             var transformBuffer = new byte[transform.OutputBlockSize];
 
+                            const long progressInterval = 64;
+
+                            long progressTick = 0;
+
                             while (inFile.Position < inFile.Length)
                             {
                                 var readCount = await inFile.ReadAsync(readBuffer, 0, transform.InputBlockSize, CancellationTokenSource.Token);
@@ -78,7 +83,11 @@ namespace MyCryptographyApp.ViewModels
                                     var finalBlock = transform.TransformFinalBlock(readBuffer, 0, readCount);
                                     await outFile.WriteAsync(finalBlock, 0, finalBlock.Length, CancellationTokenSource.Token);
                                 }
-                                await ProgressReportable.ReportProgressAsync((double)inFile.Position / inFile.Length);
+                                if(progressTick++ == progressInterval)
+                                {
+                                    await ProgressReportable.ReportProgressAsync((double)inFile.Position / inFile.Length);
+                                    progressTick = 0;
+                                }
                                 CancellationTokenSource.Token.ThrowIfCancellationRequested();
                             }
 
@@ -92,7 +101,11 @@ namespace MyCryptographyApp.ViewModels
 
         protected override OperationViewModel CreateReverseOperation()
         {
-            return new SymmetricCryptographyOperationViewModel($"{Name} Reversed", SymmetricAlgorithmFactory, HashAlgorithmFactory, OperationType == SymmetricCryptographyOperationType.Encryption ? SymmetricCryptographyOperationType.Decryption : SymmetricCryptographyOperationType.Encryption, OutputPath, InputPath, UnhashedKey);
+            var reversedOperationType = CryptographyOperationTypeHelper.ReverseType(OperationType);
+            var prefix = StringHelper.GetSymmetricCryptographyOperationTypePrefix(reversedOperationType);
+            var fi = new FileInfo(OutputPath);
+            
+            return new SymmetricCryptographyOperationViewModel($"{Name} Reversed", SymmetricAlgorithmFactory, HashAlgorithmFactory, reversedOperationType, OutputPath, $"{fi.DirectoryName}{Path.DirectorySeparatorChar}{prefix}{fi.Name}", UnhashedKey);
         }
 
         public Func<SymmetricAlgorithm> SymmetricAlgorithmFactory { get; }

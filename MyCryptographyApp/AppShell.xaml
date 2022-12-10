@@ -7,7 +7,7 @@
     Shell.FlyoutBehavior="Flyout">
 
     <ShellContent
-        Title="New Operation"
+        Title="Help And About"
         ContentTemplate="{DataTemplate views:HelpPage}"
         Route="HelpPage" />
 

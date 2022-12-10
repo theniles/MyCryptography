@@ -21,7 +21,7 @@
                 Go to the View Operations page
             </Label>
             <Label>
-                Start, cancel, retry, reverse or dismiss the operations as desired
+                Start, cancel, retry, reverse (will create an operation to decrypt the file in the same directory) or dismiss the operations as desired
             </Label>
             <Label>
                 Enjoy!
@@ -30,7 +30,7 @@
                 This program was made to practice programming
             </Label>
             <Label>
-                Concepts practiced include dependency injection, MVVM architecture, asynchronous programming, cryptography, file handling, system resource management, UI design (although I'm not that good at it) and enterprise logic
+                Concepts practiced include dependency injection, MVVM architecture, asynchronous programming, cryptography, file handling, system resource management, UI design (although I'm not that good at it), string manipulation and enterprise logic
             </Label>
         </VerticalStackLayout>
     </ScrollView>
