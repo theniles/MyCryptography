@@ -49,16 +49,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Controls\" />
-	  <Folder Include="Converters\" />
-	  <Folder Include="Behaviors\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Update="Views\NewOperationPage.xaml">
+	  <MauiXaml Update="Views\HelpPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\QueryOperationsPage.xaml">
+	  <MauiXaml Update="Views\NewOperationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ViewOperationsPage.xaml">

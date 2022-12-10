@@ -10,6 +10,6 @@ namespace MyCryptographyApp.ViewModels
     {
         public Task ReportProgressAsync(double progress);
 
-        public Task ReportErrorAsync(string error);
+        public Task ReportMessageAsync(string message);
     }
 }
